@@ -12,4 +12,36 @@ function initialPrompt() {
     ]);
 };
 
-module.exports = initialPrompt;
+function addEmployeePrompt() {
+    return Promise.all([queries.getRoles(), queries.getManagers()]).then(([roleChoices, managerChoices]) => {
+        return inquirer.prompt([
+            {
+                type: 'input',
+                message: "What is the employee's first name?",
+                name: 'firstName'
+            },
+            {
+                type: 'input',
+                message: "What is the employee's last name?",
+                name: 'lastName'
+            },
+            {
+                type: 'list',
+                message: "What is the employee's role?",
+                choices: roleChoices,
+                name: 'roleTitle'
+            },
+            {
+                type: 'list',
+                message: "Who is the employee's manager?",
+                choices: managerChoices,
+                name: 'managerName'
+            }
+        ])
+    })
+}
+
+module.exports = {
+    initialPrompt,
+    addEmployeePrompt
+};
