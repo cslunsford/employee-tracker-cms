@@ -18,12 +18,14 @@ function addEmployeePrompt() {
             {
                 type: 'input',
                 message: "What is the employee's first name?",
-                name: 'firstName'
+                name: 'firstName',
+                validate: input => input.trim() !== '' || 'Please enter a first name.'
             },
             {
                 type: 'input',
                 message: "What is the employee's last name?",
-                name: 'lastName'
+                name: 'lastName',
+                validate: input => input.trim() !== '' || 'Please enter a last name.'
             },
             {
                 type: 'list',
@@ -41,7 +43,63 @@ function addEmployeePrompt() {
     })
 }
 
+function updateEmployeeRole() {
+    return Promise.all([queries.getEmployees(), queries.getRoles()]).then(([employeeChoices, roleChoices]) => {
+        return inquirer.prompt([
+            {
+                type: 'list',
+                message: "Which employee's role would you like to update?",
+                choices: employeeChoices,
+                name: 'employeeToUpdate',
+            },
+            {
+                type: 'list',
+                message: "What is the employee's new role?",
+                choices: roleChoices,
+                name: 'selectedRole',
+            },
+        ])
+    })
+}
+
+function addRolePrompt(departmentChoices) {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is the name of the role?',
+            name: 'roleTitle',
+            validate: input => input.trim() !== '' || 'Please enter the role.',
+        },
+        {
+            type: 'input',
+            message: 'What is the salary for this role?',
+            name: 'roleSalary',
+            validate: input => /^\d+(\.\d{1,2})?$/.test(input) || "Please enter the role's salary.",
+        },
+        {
+            type: 'list',
+            message: 'Which department does this role belong to?',
+            choices: departmentChoices,
+            name: 'departmentName'
+        }
+    ]);
+}
+
+function addDepartmentPrompt() {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is the name of the new department?',
+            name: 'departmentName',
+            validate: input => input.trim() !== '' || 'Please enter the department name.' 
+        }
+    ]);
+}
+
 module.exports = {
     initialPrompt,
-    addEmployeePrompt
+    addEmployeePrompt,
+    updateEmployeeRole,
+    addRolePrompt,
+    addDepartmentPrompt
 };
